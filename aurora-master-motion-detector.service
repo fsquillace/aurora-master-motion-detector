@@ -1,0 +1,12 @@
+[Unit]
+Description=Aurora Master motion detector
+
+[Service]
+TimeoutStartSec=0
+Restart=always
+StartLimitBurst=0
+StartLimitIntervalSec=60
+ExecStart=/usr/local/bin/aurora-master-motion-detector
+
+[Install]
+WantedBy=multi-user.target

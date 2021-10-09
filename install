@@ -1,0 +1,20 @@
+#! /bin/sh
+
+set -e
+
+echo "=> Installing Pip and dependencies...\n"
+sudo apt install -y python3-pip
+sudo pip3 install -r requirements.txt
+
+echo "=> Installing Aurora Master motion detector...\n"
+sudo cp aurora-master-motion-detector /usr/local/bin/
+sudo chmod +x /usr/local/bin/aurora-master-motion-detector
+
+echo "=> Starting Aurora Master motion detector via Systemd...\n"
+sudo cp aurora-master-motion-detector.service /lib/systemd/system/aurora-master-motion-detector.service
+
+sudo systemctl daemon-reload
+sudo systemctl enable aurora-master-motion-detector.service
+sudo systemctl restart aurora-master-motion-detector.service
+
+echo "Aurora Master motion detector installed."
