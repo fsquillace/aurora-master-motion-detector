@@ -29,19 +29,22 @@ AURORA_MASTER_HOSTNAME = "esp8266.local"
 def activate_aurora_master():
     max_attempts = 20
 
-    for attempt in range(max_attempts):
-        current_state = requests.get(f"http://{AURORA_MASTER_HOSTNAME}/state").text
-        if current_state == '1':
-            logger.info("Aurora Master activated")
-            break
-        # Change the mode twice to get the nicest mode (multiple colors)
-        text = requests.get(f"http://{AURORA_MASTER_HOSTNAME}/change_mode").text
-        logger.info(f"Changed mode attempted. Result: {text}")
-        text = requests.get(f"http://{AURORA_MASTER_HOSTNAME}/change_mode").text
-        logger.info(f"Changed mode attempted. Result: {text}")
-        time.sleep(0.1)
-    else:
-        logger.error("Number of attempts exceeded! It was not possible to activate Aurora Master.")
+    try:
+        for attempt in range(max_attempts):
+            current_state = requests.get(f"http://{AURORA_MASTER_HOSTNAME}/state").text
+            if current_state == '1':
+                logger.info("Aurora Master activated")
+                break
+            # Change the mode twice to get the nicest mode (multiple colors)
+            text = requests.get(f"http://{AURORA_MASTER_HOSTNAME}/change_mode").text
+            logger.info(f"Changed mode attempted. Result: {text}")
+            text = requests.get(f"http://{AURORA_MASTER_HOSTNAME}/change_mode").text
+            logger.info(f"Changed mode attempted. Result: {text}")
+            time.sleep(0.1)
+        else:
+            logger.error("Number of attempts exceeded! It was not possible to activate Aurora Master.")
+    except requests.exceptions.ConnectionError:
+        logger.exception(f"Could not connect to Aurora Master: {AURORA_MASTER_HOSTNAME}")
 
 
 def main_loop():
